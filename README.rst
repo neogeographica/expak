@@ -15,4 +15,10 @@ outside of the standard Python modules.
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
 
 
-need to add links to docs at RTD
+Documentation sections:
+
+- `expak module`_
+- `simple expak utility`_
+
+.. _expak module: http://expak.readthedocs.org/en/latest/expak.html
+.. _simple expak utility: http://expak.readthedocs.org/en/latest/simple_expak.html
