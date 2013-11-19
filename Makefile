@@ -1,4 +1,4 @@
-.PHONY: test docs clean sdist
+.PHONY: test docs clean sdist infup publish winpublish
 
 test:
 	tox
@@ -14,6 +14,18 @@ docs: sphinxbox/expak.py
 
 sdist:
 	python setup.py sdist
+
+infup:
+	python setup.py register
+
+publish:
+	python setup.py sdist upload
+	python2.6 setup.py bdist_egg upload
+	python2.7 setup.py bdist_egg upload
+
+winpublish:
+	C:\Python26\python.exe setup.py bdist_wininst --target-version=2.6 upload
+	C:\Python27\python.exe setup.py bdist_wininst --target-version=2.7 upload
 
 clean:
 	python setup.py clean
