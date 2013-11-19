@@ -1,6 +1,7 @@
 Changelog for expak
 ===================
 
-**Nov 19 2013, v0.9 (beta):**
-Initial upload to PyPI. No known issues, but starting with a beta classifier
-until I'm sure that the packaging is correct.
+- **0.9** (2013-11-19)
+
+  - Initial upload to PyPI. No known issues, but starting with a beta classifier
+    until I'm sure that the packaging is correct.

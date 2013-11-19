@@ -15,7 +15,31 @@ outside of the standard Python modules.
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
 
 
-Documentation sections:
+Installation
+============
+
+The latest version of expak can always be installed or updated to via the `pip`_
+package manager:
+
+.. code-block:: none
+
+    pip install expak
+
+pip is preferred, but easy_install will also work:
+
+.. code-block:: none
+
+    easy_install expak
+
+And if you are on Windows, you could also choose to use an installer program,
+available among the `downloads for expak`_ at the Python Package Index (PyPI)
+(look for downloads of the type "MS Windows installer").
+
+.. _pip: http://www.pip-installer.org/en/latest
+.. _downloads for expak: https://pypi.python.org/pypi/expak#downloads
+
+Documentation
+=============
 
 - `expak module`_
 - `simple expak utility`_
