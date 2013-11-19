@@ -1,4 +1,4 @@
-Changelog for expak
+Changelog
 ===================
 
 - **0.9** (2013-11-19)

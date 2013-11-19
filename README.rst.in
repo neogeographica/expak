@@ -26,11 +26,5 @@ available among the `downloads for expak`_ at the Python Package Index (PyPI)
 .. _pip: http://www.pip-installer.org/en/latest
 .. _downloads for expak: https://pypi.python.org/pypi/expak#downloads
 
-Documentation
-=============
+.. include:: docs/rtdlinks.txt
 
-- `expak module`_
-- `simple expak utility`_
-
-.. _expak module: http://expak.readthedocs.org/en/latest/expak.html
-.. _simple expak utility: http://expak.readthedocs.org/en/latest/simple_expak.html
