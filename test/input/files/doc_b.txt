@@ -1,0 +1,1 @@
+This is doc_b in the root.

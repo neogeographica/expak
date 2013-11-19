@@ -1,0 +1,11 @@
+/build
+/dist
+/htmlcov
+/docs/_build
+.DS_Store
+.coverage
+.tox
+*.egg
+*.egg-info
+*.pyc
+__pycache__
