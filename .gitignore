@@ -1,7 +1,9 @@
 /build
 /dist
 /htmlcov
+/sphinxbox
 /docs/_build
+/docs/modules.rst
 .DS_Store
 .coverage
 .tox
