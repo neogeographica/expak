@@ -23,7 +23,6 @@
 import os
 import contextlib
 import filecmp
-import shutil
 import expak
 import pytest
 
@@ -69,9 +68,8 @@ def temp_workdir(dir):
         yield
     finally:
         os.chdir(cwd)
-# Leave the output files in place in case they are needed for test debug.
-# pytest should reap temp directories older than 4 test runs.
-        shutil.rmtree(dir)
+    # Leave the output files in place in case they are needed for test debug.
+    # pytest should reap temp directories older than 4 test runs.
 
 @pytest.fixture
 def outdir_gen(tmpdir):
@@ -137,7 +135,7 @@ def bad_converter(orig_data, name):
 # tests
 
 @pytest.mark.parametrize(
-    "sources,                 resource_names",
+    ("sources",               "resource_names"),
    [(PAK_A,                   ALL_A_RES),
     (NO_PAK,                  None),
     (BAD_PAK,                 None),
@@ -148,7 +146,7 @@ def test_resource_names(sources, resource_names):
     assert expak.resource_names(sources) == resource_names
 
 @pytest.mark.parametrize(
-    "sources,                 resources_out",
+    ("sources",               "resources_out"),
    [(PAK_A,                   ALL_A_RES),
     (NO_PAK,                  NO_RES),
     (BAD_PAK,                 NO_RES),
@@ -179,49 +177,49 @@ def test_bad_process_all(tmpdir, sources):
         validate(outdir, FILES_PATH, {})
 
 @pytest.mark.parametrize(
-    "sources,                 resources_in,       resources_out, target_fun",
-   [(PAK_A,                   ALL_B_RES,          NO_RES,        None),
-    (PAK_A,                   ALL_B_RES,          NO_RES,        renamed_targets),
-    (NO_PAK,                  ALL_RES,            NO_RES,        None),
-    (NO_PAK,                  ALL_RES,            NO_RES,        renamed_targets),
-    (BAD_PAK,                 ALL_RES,            NO_RES,        None),
-    (BAD_PAK,                 ALL_RES,            NO_RES,        renamed_targets),
-    (PAK_B,                   SOME_RES,           SOME_B_RES,    None),
-    (PAK_B,                   SOME_RES,           SOME_B_RES,    renamed_targets),
-    (PAK_B,                   SOME_RES,           SOME_B_RES,    flat_targets),
-    ([PAK_A, PAK_B],          BAD_RES,            NO_RES,        None),
-    ([PAK_A, PAK_B],          BAD_RES,            NO_RES,        renamed_targets),
-    ([NO_PAK, PAK_B, PAK_A],  BAD_RES,            NO_RES,        None),
-    ([NO_PAK, PAK_B, PAK_A],  BAD_RES,            NO_RES,        renamed_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_RES,            NO_RES,        None),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_RES,            NO_RES,        renamed_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,    None),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,    renamed_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,    flat_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,    None),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,    renamed_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,    flat_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,    None),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,    renamed_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,    flat_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,    None),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,    renamed_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,    flat_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,    None),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,    renamed_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,    flat_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,    None),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,    renamed_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,    flat_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,      None),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,      renamed_targets),
-    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,      flat_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,      None),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,      renamed_targets),
-    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,      flat_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,      None),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,      renamed_targets),
-    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,      flat_targets)])
+    ("sources",               "resources_in",     "resources_out", "target_fun"),
+   [(PAK_A,                   ALL_B_RES,          NO_RES,          None),
+    (PAK_A,                   ALL_B_RES,          NO_RES,          renamed_targets),
+    (NO_PAK,                  ALL_RES,            NO_RES,          None),
+    (NO_PAK,                  ALL_RES,            NO_RES,          renamed_targets),
+    (BAD_PAK,                 ALL_RES,            NO_RES,          None),
+    (BAD_PAK,                 ALL_RES,            NO_RES,          renamed_targets),
+    (PAK_B,                   SOME_RES,           SOME_B_RES,      None),
+    (PAK_B,                   SOME_RES,           SOME_B_RES,      renamed_targets),
+    (PAK_B,                   SOME_RES,           SOME_B_RES,      flat_targets),
+    ([PAK_A, PAK_B],          BAD_RES,            NO_RES,          None),
+    ([PAK_A, PAK_B],          BAD_RES,            NO_RES,          renamed_targets),
+    ([NO_PAK, PAK_B, PAK_A],  BAD_RES,            NO_RES,          None),
+    ([NO_PAK, PAK_B, PAK_A],  BAD_RES,            NO_RES,          renamed_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_RES,            NO_RES,          None),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_RES,            NO_RES,          renamed_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,      None),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,      renamed_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_B_RES, SOME_B_RES,      flat_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,      None),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,      renamed_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_B_RES, SOME_B_RES,      flat_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,      None),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,      renamed_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_B_RES, SOME_B_RES,      flat_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,      None),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,      renamed_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_A_RES, SOME_A_RES,      flat_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,      None),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,      renamed_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_A_RES, SOME_A_RES,      flat_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,      None),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,      renamed_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_A_RES, SOME_A_RES,      flat_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,        None),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,        renamed_targets),
+    ([PAK_A, PAK_B],          BAD_AND_SOME_RES,   SOME_RES,        flat_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,        None),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,        renamed_targets),
+    ([NO_PAK, PAK_A, PAK_B],  BAD_AND_SOME_RES,   SOME_RES,        flat_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,        None),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,        renamed_targets),
+    ([BAD_PAK, PAK_A, PAK_B], BAD_AND_SOME_RES,   SOME_RES,        flat_targets)])
 def test_process_selected(outdir_gen, sources,
                           resources_in, resources_out, target_fun):
     if target_fun:
@@ -257,7 +255,7 @@ def test_process_selected(outdir_gen, sources,
             assert remaining_resources == targets_in
 
 @pytest.mark.parametrize(
-    "sources,                 resources_in,     target_fun",
+    ("sources",               "resources_in",   "target_fun"),
    [(PAK_A,                   SOME_RES,         None),
     (PAK_A,                   SOME_RES,         renamed_targets),
     ([PAK_A, PAK_B],          BAD_AND_SOME_RES, None),
@@ -322,7 +320,7 @@ def test_main_extract_all(tmpdir, capsys, sources):
     assert not str(out).strip()
 
 @pytest.mark.parametrize(
-    "sources,                 resources_in,     all_found",
+    ("sources",               "resources_in",   "all_found"),
    [([PAK_A],                 ALL_A_RES,        True),
     ([PAK_A],                 SOME_RES,         False),
     ([NO_PAK],                SOME_RES,         False),
