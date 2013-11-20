@@ -33,9 +33,10 @@ long_description = '\n\n'.join([read('docs', 'blurb.txt'),
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
-        self.test_args = ['--strict', '--verbose', '--tb=long',
-                          '--cov', 'expak',
-                          '--cov-report=html', '--cov-report=term']
+        self.test_args = ['--strict', '--verbose', '--tb=long']
+        # disabling coverage in "setup.py test" for now (& see below)
+#                          '--cov', 'expak',
+#                          '--cov-report=html', '--cov-report=term']
         self.test_suite = True
     def run_tests(self):
         import pytest
@@ -69,6 +70,8 @@ setup(
     install_requires = [],
     entry_points={'console_scripts': ['simple_expak = expak:simple_expak']},
     test_suite = 'test.test_expak',
-    tests_require = ['pytest-cov', 'pytest'],
+        # disabling coverage in "setup.py test" for now (& see above)
+#    tests_require = ['pytest-cov', 'pytest'],
+    tests_require = ['pytest'],
     cmdclass = {'test': PyTest}
 )
