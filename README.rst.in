@@ -1,6 +1,10 @@
 expak: Extract and process resources from Quake-style pak files
 ===============================================================
 
+.. image:: https://api.travis-ci.org/neogeographica/expak.png?branch=master
+    :target: http://travis-ci.org/neogeographica/expak
+    :alt: build status of the master branch
+
 .. include:: docs/blurb.txt
 
 Installation
