@@ -230,7 +230,7 @@ def process_resources_int(pak_path, converter, targets):
                       :func:`process_resources`
     :type converter:  function(str,str)
     :param targets:   resources to select, as described for
-                      :func:`process_resources`
+                      :func:`process_resources`; contents may be modified
     :type targets:    dict(str,str) or set(str) or None
 
     :returns: True if no IOError exception reading the pak file and no
@@ -328,7 +328,8 @@ def process_resources(sources, converter, targets=None):
     :type sources:    str or iterable(str)
     :param converter: used to process each selected resource, as described above
     :type converter:  function(str,str)
-    :param targets:   resources to select, as described above
+    :param targets:   resources to select, as described above; contents may be
+                      modified
     :type targets:    dict(str,str) or set(str) or None
 
     :returns: True if no IOError exception reading the pak file and no
@@ -395,7 +396,7 @@ def extract_resources(sources, targets=None):
                     specifying multiple such paths
     :type sources:  str or iterable(str)
     :param targets: resources to select, as described for
-                    :func:`process_resources`
+                    :func:`process_resources`; contents may be modified
     :type targets:  dict(str,str) or set(str) or None
 
     :returns: True if no IOError exception reading the pak file and no
@@ -512,7 +513,7 @@ def simple_expak(argv=None):
     a directory path relative to the current working directory, determined by
     the resource name as described for the :func:`expak.nop_converter` function.
 
-    If any user-specified resources are not found, or are unabled to be
+    If any user-specified resources are not found, or are unable to be
     extracted, then :program:`simple_expak` will print a list of such resources
     once it is done.
 
