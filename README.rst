@@ -23,13 +23,13 @@ Installation
 ============
 
 The latest version of expak can always be installed or updated to via the `pip`_
-package manager:
+package manager, and this is the preferred method:
 
 .. code-block:: none
 
     pip install expak
 
-pip is preferred, but easy_install will also work:
+The easy_install utility can also install expak:
 
 .. code-block:: none
 
