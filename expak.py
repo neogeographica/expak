@@ -148,6 +148,8 @@ def read_header(instream):
     """
     instream.seek(0)
     file_id = instream.read(len(PAK_FILE_SIGNATURE))
+    # We don't raise IOError on a short read here... IOError is for use after
+    # we've determined it's actually a pak file.
     if file_id != PAK_FILE_SIGNATURE:
         return None
     ftable_off = read_uint(instream)
