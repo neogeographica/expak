@@ -99,6 +99,7 @@ __version__ = "1.0"
 import struct
 import sys
 import os
+import errno
 
 PAK_FILE_SIGNATURE = "PACK"
 RESOURCE_NAME_LEN = 56
@@ -377,8 +378,12 @@ def nop_converter(orig_data, name):
     """
     real_path = os.path.join(*name.split("/"))
     out_dir = os.path.dirname(real_path)
-    if out_dir and not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if out_dir:
+        try:
+            os.makedirs(out_dir)
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                raise
     with open(real_path, 'wb') as outstream:
         outstream.write(orig_data)
     return True
