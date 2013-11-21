@@ -34,8 +34,11 @@ clean:
 	-rm -rf htmlcov
 	-rm -rf expak.egg-info
 	-rm *.pyc
+	-rm test/*.pyc
+	-rm -rf test/__pycache__
 	cd docs; make clean
 
 superclean: clean
 	-rm -rf *.egg
 	-rm -rf sphinxbox
+	-rm -rf .tox
