@@ -1,5 +1,5 @@
 Documentation
-=============
+-------------
 
 - `expak module`_
 - `simple expak utility`_

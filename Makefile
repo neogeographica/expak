@@ -1,4 +1,4 @@
-.PHONY: test docs clean sdist infup publish winpublish
+.PHONY: test readme docs clean sdist infup publish winpublish
 
 test:
 	tox
@@ -7,18 +7,20 @@ sphinxbox/expak.py:
 	-mkdir sphinxbox
 	cd sphinxbox; ln -s ../expak.py .
 
-docs: sphinxbox/expak.py
-	sphinx-apidoc -o docs sphinxbox
-	cd docs; make html
+readme:
 	python make_readme.py
 
-sdist:
+docs: sphinxbox/expak.py readme
+	sphinx-apidoc -o docs sphinxbox
+	cd docs; make html
+
+sdist: readme
 	python setup.py sdist
 
-infup:
+infup: readme
 	python setup.py register
 
-publish:
+publish: readme
 	python setup.py sdist upload
 	python2.6 setup.py bdist_egg upload
 	python2.7 setup.py bdist_egg upload

@@ -6,6 +6,8 @@ import os
 import sys
 import re
 
+ANCHOR_PATTERN = re.compile('^\.\. _([^:]+):$')
+
 # Work around 2.6 error when exiting tests:
 try:
     import multiprocessing
@@ -26,10 +28,6 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-long_description = '\n\n'.join([read('docs', 'blurb.txt'),
-                                read('docs', 'rtdlinks.txt'),
-                                read('HISTORY.rst')])
-
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -43,6 +41,28 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+description = 'Extract and process resources from Quake-style pak files'
+readme_orig = read('README.rst')
+readme_sections = set(['blurb_section', 'documentation_section'])
+readme = ''
+section = None
+include_line = False
+for readme_line in readme_orig.splitlines(True):
+    is_anchor = ANCHOR_PATTERN.match(readme_line)
+    if is_anchor:
+        section = is_anchor.group(1)
+        include_line = False
+        continue
+    if section == 'header_section':
+        if readme_line.startswith('expak:'):
+            description = readme_line[6:].strip()
+    if include_line:
+        readme = readme + readme_line
+    elif section in readme_sections:
+        include_line = True
+
+long_description = readme + read('HISTORY.rst')
+
 setup(
     py_modules = ['expak'],
     name = 'expak',
@@ -50,7 +70,7 @@ setup(
     author = 'Joel Baxter',
     author_email = 'joel.baxter@neogeographica.com',
     url = 'http://github.com/neogeographica/expak',
-    description = 'Extract and process resources from Quake-style pak files',
+    description = description,
     long_description = long_description,
     classifiers = [
 #        'Development Status :: 4 - Beta',
