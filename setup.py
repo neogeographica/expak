@@ -53,8 +53,8 @@ setup(
     description = 'Extract and process resources from Quake-style pak files',
     long_description = long_description,
     classifiers = [
-        'Development Status :: 4 - Beta',
-#        'Development Status :: 5 - Production/Stable',
+#        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
