@@ -523,6 +523,11 @@ def simple_expak(argv=None):
     paks/resources as possible, it will exit with a status of 0 if no such
     exceptions were encountered, or 1 otherwise.
 
+    .. note::
+
+         :program:`python -m expak` behaves identically to
+         :program:`simple_expak`.
+
     """
     # Normal use (when invoked from the utility) passes in None for argv, and
     # arguments are then taken from the command line. For testing however, other
@@ -554,3 +559,6 @@ def simple_expak(argv=None):
         return 0
     else:
         return 1
+
+if __name__ == "__main__":
+    sys.exit(simple_expak())
