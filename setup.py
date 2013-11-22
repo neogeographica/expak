@@ -41,7 +41,11 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+# Set a default description just in case we don't find it in the readme.
 description = 'Extract and process resources from Quake-style pak files'
+
+# Pick the desired sections out of the readme for use in the long description,
+# and also look for the short description in the readme header.
 readme_orig = read('README.rst')
 readme_sections = set(['blurb_section', 'documentation_section'])
 readme = ''
@@ -61,6 +65,7 @@ for readme_line in readme_orig.splitlines(True):
     elif section in readme_sections:
         include_line = True
 
+# Form long description from select readme sections + history/changelog.
 long_description = readme + read('HISTORY.rst')
 
 setup(
@@ -92,7 +97,7 @@ setup(
     install_requires = [],
     entry_points={'console_scripts': ['simple_expak = expak:simple_expak']},
     test_suite = 'test.test_expak',
-        # disabling coverage in "setup.py test" for now (& see above)
+    # disabling coverage in "setup.py test" for now (& see above)
 #    tests_require = ['pytest-cov', 'pytest'],
     tests_require = ['pytest'],
     cmdclass = {'test': PyTest}
