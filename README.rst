@@ -74,15 +74,16 @@ installed but can't or don't want to use pip:
 Finally, if you are on Windows, you could also choose to use an installer
 program, although the methods above work fine on Windows. Custom expak
 installers are included in the downloads list for expak
-`at the Python Package Index`_ (PyPI).
+`at the Python Package Index`_ (PyPI), and also `at Crate.io`_ or other PyPI
+mirrors.
 
-If PyPI is down, the Windows installers and all the other distribution files
-are mirrored `at Crate.io`_ and other PyPI mirrors, and here at GitHub in the
-`releases for this repo`_.
+If PyPI and its mirrors are down, the Windows installers and other forms of
+distribution files (including source distribution) are mirrored
+`in the releases for the GitHub repo`_.
 
 .. _at the Python Package Index: https://pypi.python.org/pypi/expak
 .. _at Crate.io: https://crate.io/packages/expak
-.. _releases for this repo: https://github.com/neogeographica/expak/releases
+.. _in the releases for the GitHub repo: https://github.com/neogeographica/expak/releases
 
 .. _documentation_section:
 
