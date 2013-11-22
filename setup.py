@@ -14,6 +14,13 @@ try:
 except ImportError:
     pass
 
+# Force bdist_wininst to use the correct bundled installer, even when building
+# on non-Windows platforms.
+import distutils.msvccompiler
+def correct_build_version():
+    return 9.0
+distutils.msvccompiler.get_build_version = correct_build_version
+
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*parts):
