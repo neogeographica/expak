@@ -93,12 +93,13 @@ __all__ = ['process_resources',
            'nop_converter',
            'print_err']
 
-__version__ = "0.9"
+__version__ = "1.0"
 
 
 import struct
 import sys
 import os
+import errno
 
 PAK_FILE_SIGNATURE = "PACK"
 RESOURCE_NAME_LEN = 56
@@ -147,6 +148,8 @@ def read_header(instream):
     """
     instream.seek(0)
     file_id = instream.read(len(PAK_FILE_SIGNATURE))
+    # We don't raise IOError on a short read here... IOError is for use after
+    # we've determined it's actually a pak file.
     if file_id != PAK_FILE_SIGNATURE:
         return None
     ftable_off = read_uint(instream)
@@ -377,8 +380,12 @@ def nop_converter(orig_data, name):
     """
     real_path = os.path.join(*name.split("/"))
     out_dir = os.path.dirname(real_path)
-    if out_dir and not os.path.exists(out_dir):
-        os.makedirs(out_dir)
+    if out_dir:
+        try:
+            os.makedirs(out_dir)
+        except OSError, e:
+            if e.errno != errno.EEXIST:
+                raise
     with open(real_path, 'wb') as outstream:
         outstream.write(orig_data)
     return True
@@ -523,6 +530,11 @@ def simple_expak(argv=None):
     paks/resources as possible, it will exit with a status of 0 if no such
     exceptions were encountered, or 1 otherwise.
 
+    .. note::
+
+         :program:`python -m expak` behaves identically to
+         :program:`simple_expak`.
+
     """
     # Normal use (when invoked from the utility) passes in None for argv, and
     # arguments are then taken from the command line. For testing however, other
@@ -554,3 +566,6 @@ def simple_expak(argv=None):
         return 0
     else:
         return 1
+
+if __name__ == "__main__":
+    sys.exit(simple_expak())

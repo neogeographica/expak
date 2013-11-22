@@ -1,3 +1,5 @@
+.. _header_section:
+
 expak: Extract and process resources from Quake-style pak files
 ===============================================================
 
@@ -8,6 +10,8 @@ expak: Extract and process resources from Quake-style pak files
 .. image:: https://api.travis-ci.org/neogeographica/expak.png?branch=master
     :target: http://travis-ci.org/neogeographica/expak
     :alt: build status of the master branch
+
+.. _blurb_section:
 
 *expak* is a GPLv3_-licensed tool to extract and optionally process resources
 from one or more `Quake-style pak files`_.
@@ -23,8 +27,10 @@ outside of the standard Python modules.
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
 
 
+.. _prerequisites_section:
+
 Prerequisites
-=============
+-------------
 
 It's a Python module and utility, so you need Python! If you don't have Python
 installed, `go get it`_. Note that while both Python 2 and Python 3 are
@@ -46,8 +52,10 @@ but you can ignore all of its complexity for the purposes of installing expak.
 .. _pip: http://www.pip-installer.org/en/latest
 .. _instructions for installing pip: http://www.pip-installer.org/en/latest/installing.html
 
+.. _installation_section:
+
 Installation
-============
+------------
 
 The latest version of expak can always be installed or updated to via the `pip`_
 package manager, and this is the preferred method:
@@ -66,18 +74,21 @@ installed but can't or don't want to use pip:
 Finally, if you are on Windows, you could also choose to use an installer
 program, although the methods above work fine on Windows. Custom expak
 installers are included in the downloads list for expak
-`at the Python Package Index`_ (PyPI).
+`at the Python Package Index`_ (PyPI), and also `at Crate.io`_ or other PyPI
+mirrors.
 
-If PyPI is down, the Windows installers and all the other distribution files
-are mirrored `at Crate.io`_ and other PyPI mirrors, and here at GitHub in the
-`releases for this repo`_.
+If PyPI and its mirrors are down, the Windows installers and other forms of
+distribution files (including source distribution) are mirrored
+`in the releases for the GitHub repo`_.
 
 .. _at the Python Package Index: https://pypi.python.org/pypi/expak
 .. _at Crate.io: https://crate.io/packages/expak
-.. _releases for this repo: https://github.com/neogeographica/expak/releases
+.. _in the releases for the GitHub repo: https://github.com/neogeographica/expak/releases
+
+.. _documentation_section:
 
 Documentation
-=============
+-------------
 
 - `expak module`_
 - `simple expak utility`_

@@ -6,11 +6,20 @@ import os
 import sys
 import re
 
+ANCHOR_PATTERN = re.compile('^\.\. _([^:]+):$')
+
 # Work around 2.6 error when exiting tests:
 try:
     import multiprocessing
 except ImportError:
     pass
+
+# Force bdist_wininst to use the correct bundled installer, even when building
+# on non-Windows platforms.
+import distutils.msvccompiler
+def correct_build_version():
+    return 9.0
+distutils.msvccompiler.get_build_version = correct_build_version
 
 here = os.path.abspath(os.path.dirname(__file__))
 
@@ -26,10 +35,6 @@ def find_version(*file_paths):
         return version_match.group(1)
     raise RuntimeError("Unable to find version string.")
 
-long_description = '\n\n'.join([read('docs', 'blurb.txt'),
-                                read('docs', 'rtdlinks.txt'),
-                                read('HISTORY.rst')])
-
 class PyTest(TestCommand):
     def finalize_options(self):
         TestCommand.finalize_options(self)
@@ -43,6 +48,33 @@ class PyTest(TestCommand):
         errno = pytest.main(self.test_args)
         sys.exit(errno)
 
+# Set a default description just in case we don't find it in the readme.
+description = 'Extract and process resources from Quake-style pak files'
+
+# Pick the desired sections out of the readme for use in the long description,
+# and also look for the short description in the readme header.
+readme_orig = read('README.rst')
+readme_sections = set(['blurb_section', 'documentation_section'])
+readme = ''
+section = None
+include_line = False
+for readme_line in readme_orig.splitlines(True):
+    is_anchor = ANCHOR_PATTERN.match(readme_line)
+    if is_anchor:
+        section = is_anchor.group(1)
+        include_line = False
+        continue
+    if section == 'header_section':
+        if readme_line.startswith('expak:'):
+            description = readme_line[6:].strip()
+    if include_line:
+        readme = readme + readme_line
+    elif section in readme_sections:
+        include_line = True
+
+# Form long description from select readme sections + history/changelog.
+long_description = readme + read('HISTORY.rst')
+
 setup(
     py_modules = ['expak'],
     name = 'expak',
@@ -50,11 +82,11 @@ setup(
     author = 'Joel Baxter',
     author_email = 'joel.baxter@neogeographica.com',
     url = 'http://github.com/neogeographica/expak',
-    description = 'Extract and process resources from Quake-style pak files',
+    description = description,
     long_description = long_description,
     classifiers = [
-        'Development Status :: 4 - Beta',
-#        'Development Status :: 5 - Production/Stable',
+#        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
@@ -72,7 +104,7 @@ setup(
     install_requires = [],
     entry_points={'console_scripts': ['simple_expak = expak:simple_expak']},
     test_suite = 'test.test_expak',
-        # disabling coverage in "setup.py test" for now (& see above)
+    # disabling coverage in "setup.py test" for now (& see above)
 #    tests_require = ['pytest-cov', 'pytest'],
     tests_require = ['pytest'],
     cmdclass = {'test': PyTest}
