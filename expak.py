@@ -383,7 +383,7 @@ def nop_converter(orig_data, name):
     if out_dir:
         try:
             os.makedirs(out_dir)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
     with open(real_path, 'wb') as outstream:
