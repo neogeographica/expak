@@ -26,6 +26,12 @@ import filecmp
 import expak
 import pytest
 
+# Adapter for string type differences between Python 2 & 3.
+try:
+    basestring
+except NameError:
+    basestring = str
+
 TEST_HOME = os.path.abspath(os.path.dirname(__file__))
 
 TEST_INPUT_PATH = os.path.join(TEST_HOME, "input")

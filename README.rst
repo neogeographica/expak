@@ -20,8 +20,8 @@ The main component delivered by expak installation is a pure Python module,
 for programmatically working with pak files. The installation also creates a
 command-line utility for simple resource-extraction operations.
 
-Currently expak is compatible with Python 2.6 and 2.7. It has no dependencies
-outside of the standard Python modules.
+Currently expak is compatible with Python 2.6, 2.7, 3.2, and 3.3. It has no
+dependencies outside of the standard Python modules.
 
 .. _GPLv3: http://www.gnu.org/copyleft/gpl.html
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
@@ -33,9 +33,10 @@ Prerequisites
 -------------
 
 It's a Python module and utility, so you need Python! If you don't have Python
-installed, `go get it`_. Note that while both Python 2 and Python 3 are
-available, for expak specifically you will want to get the latest version of
-Python 2.
+installed, `go get it`_. The latest stable version of either Python 2 or Python 3
+will work... if you're new to Python, you should look elsewhere for advice on
+whether to use 2 or 3, but the general consideration is that currently more
+stuff is compatible with Python 2.
 
 You'll probably also want a Python package manager to help install expak (and
 other things). If you're going to be running on Windows, you can skip this
@@ -74,15 +75,13 @@ installed but can't or don't want to use pip:
 Finally, if you are on Windows, you could also choose to use an installer
 program, although the methods above work fine on Windows. Custom expak
 installers are included in the downloads list for expak
-`at the Python Package Index`_ (PyPI), and also `at Crate.io`_ or other PyPI
-mirrors.
+`at the Python Package Index`_ (PyPI).
 
 If PyPI and its mirrors are down, the Windows installers and other forms of
 distribution files (including source distribution) are mirrored
 `in the releases for the GitHub repo`_.
 
 .. _at the Python Package Index: https://pypi.python.org/pypi/expak
-.. _at Crate.io: https://crate.io/packages/expak
 .. _in the releases for the GitHub repo: https://github.com/neogeographica/expak/releases
 
 .. _documentation_section:
