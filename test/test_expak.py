@@ -29,8 +29,11 @@ import pytest
 # Adapter for string type differences between Python 2 & 3.
 try:
     basestring
+    def is_string(candidate):
+        return isinstance(candidate, basestring)
 except NameError:
-    basestring = str
+    def is_string(candidate):
+        return isinstance(candidate, str)
 
 TEST_HOME = os.path.abspath(os.path.dirname(__file__))
 
@@ -88,7 +91,7 @@ def outdir_gen(tmpdir):
     return OutdirGen()
 
 def expected_error_free(sources):
-    if isinstance(sources, basestring):
+    if is_string(sources):
         return sources not in ALL_BAD_PAKS
     for path in sources:
         if path in ALL_BAD_PAKS:

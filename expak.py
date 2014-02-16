@@ -104,8 +104,11 @@ import errno
 # Adapter for string type differences between Python 2 & 3.
 try:
     basestring
+    def is_string(candidate):
+        return isinstance(candidate, basestring)
 except NameError:
-    basestring = str
+    def is_string(candidate):
+        return isinstance(candidate, str)
 
 PAK_FILE_SIGNATURE = b"PACK"
 RESOURCE_NAME_LEN = 56
@@ -399,7 +402,7 @@ def process_resources(sources, converter, targets=None):
     """
     enc_targets = encode_targets(targets)
     all_success = True
-    if isinstance(sources, basestring):
+    if is_string(sources):
         # Handle single-string input for the sources argument.
         all_success = process_resources_int(sources, converter, enc_targets)
     else:
@@ -516,7 +519,7 @@ def resource_names(sources):
 
     """
     # Handle single-string input for the sources argument.
-    if isinstance(sources, basestring):
+    if is_string(sources):
         return resource_names_int(sources)
     # Handle iterable input for the sources argument.
     all_resources = set()
