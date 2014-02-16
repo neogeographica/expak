@@ -333,7 +333,7 @@ def process_resources_int(pak_path, converter, targets):
                     processing_exception = True
                     if print_err:
                         sys.stderr.write("{0!r} exception processing resource {1}\n".format(
-                            sys.exc_info()[1], file_name))
+                            sys.exc_info()[1], file_name.decode()))
         return True and not processing_exception
     except IOError:
         if print_err:
