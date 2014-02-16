@@ -23,8 +23,11 @@ command-line utility for simple resource-extraction operations.
 Currently expak is compatible with Python 2.6, 2.7, 3.2, and 3.3. It has no
 dependencies outside of the standard Python modules.
 
+The quakesounds_ application is an example use of expak.
+
 .. _GPLv3: http://www.gnu.org/copyleft/gpl.html
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
+.. _quakesounds: https://github.com/neogeographica/quakesounds
 
 
 .. _prerequisites_section:
