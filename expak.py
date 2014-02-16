@@ -83,7 +83,7 @@ More complex example:
     if targets:
         print("not found (or not successfully processed):")
         for p in targets:
-            print("    %s" % p)
+            print("    {0}".format(p))
 
 """
 
@@ -93,7 +93,7 @@ __all__ = ['process_resources',
            'nop_converter',
            'print_err']
 
-__version__ = "1.0"
+__version__ = "1.1"
 
 
 import struct
@@ -101,7 +101,16 @@ import sys
 import os
 import errno
 
-PAK_FILE_SIGNATURE = "PACK"
+# Adapter for string type differences between Python 2 & 3.
+try:
+    basestring
+    def is_string(candidate):
+        return isinstance(candidate, basestring)
+except NameError:
+    def is_string(candidate):
+        return isinstance(candidate, str)
+
+PAK_FILE_SIGNATURE = b"PACK"
 RESOURCE_NAME_LEN = 56
 UNSIGNED_INT_LEN = 4
 TABLE_ENTRY_LEN = RESOURCE_NAME_LEN + (2 * UNSIGNED_INT_LEN)
@@ -154,7 +163,7 @@ def read_header(instream):
         return None
     ftable_off = read_uint(instream)
     ftable_len = read_uint(instream)
-    num_files = ftable_len / TABLE_ENTRY_LEN
+    num_files = ftable_len // TABLE_ENTRY_LEN
     return (ftable_off, num_files)
 
 def read_filetable(instream, header, targets):
@@ -173,10 +182,10 @@ def read_filetable(instream, header, targets):
     :type header:    tuple(int,int)
     :param targets:  resource names to limit resource selection, or None to
                      indicate that all resources should be selected
-    :type targets:   container(str) or None
+    :type targets:   container(bytes) or None
 
     :returns: list of (name, offset, length) tuples for selected resources
-    :rtype:   list(tuple(str,int,int))
+    :rtype:   list(tuple(bytes,int,int))
 
     """
     target_info = []
@@ -188,7 +197,7 @@ def read_filetable(instream, header, targets):
             if len(file_name) != RESOURCE_NAME_LEN:
                 raise IOError(2, "unexpected EOF reading resource name")
             # Terminate the name at the first encountered null character.
-            file_name = file_name.partition("\0")[0]
+            file_name = file_name.partition(b"\0")[0]
             file_off = read_uint(instream)
             file_len = read_uint(instream)
             if targets and file_name not in targets:
@@ -207,17 +216,71 @@ def get_target_info(instream, targets):
     :type instream:  file
     :param targets:  resource names to limit resource selection, or None to
                      indicate that all resources should be selected
-    :type targets:   container(str) or None
+    :type targets:   container(bytes) or None
 
     :returns: list of (name, offset, length) tuples for selected resources if
               the given file is a pak file, None otherwise
-    :rtype:   list(tuple(str,int,int)) or None
+    :rtype:   list(tuple(bytes,int,int)) or None
 
     """
     header = read_header(instream)
     if header is None:
         return None
     return read_filetable(instream, header, targets)
+
+def encode_targets(targets):
+    """Process the targets input to encode resource names as bytestrings.
+
+    Return None if ``targets`` is None. Otherwise return a dict generated from
+    ``targets``, where the key is a bytestring version of each resource name,
+    and the value is a tuple of the original name and the name mapping.
+
+    :param targets: resources to select, as described for
+                    :func:`process_resources`
+    :type targets:  dict(str,str) or set(str) or None
+
+    :returns: The encoded targets dictionary, or None.
+    :rtype:   dict(bytes,(str,str)) or None
+
+    """
+    if targets is None:
+        return None
+    def tobytes(in_string):
+        try:
+            return in_string.encode('latin-1')
+        except AttributeError:
+            # Eh, probably already bytes.
+            return in_string
+    if isinstance(targets, dict):
+        # 2.6 COMPAT: "dict comprehension" syntax
+        return dict([(tobytes(n), (n, targets[n])) for n in targets])
+    else:
+        # 2.6 COMPAT: "dict comprehension" syntax
+        return dict([(tobytes(n), (n, n)) for n in targets])
+
+def update_targets(targets, enc_targets):
+    """Update the input targets to reflect internal targets state.
+
+    Return immediately if ``targets`` is None. Otherwise modify ``targets`` to
+    ensure that it only contains elements that are still represented in
+    ``enc_targets``.
+
+    :param targets:     original input for resources to select, as described for
+                        :func:`process_resources`; will be modified
+    :type targets:      dict(str,str) or set(str) or None
+    :param enc_targets: the results of :func:`encode_targets`, possibly with
+                        elements removed
+    :type enc_targets:  dict(bytes,(str,str)) or None
+
+    """
+    if targets is None:
+        return
+    if isinstance(targets, dict):
+        new_targets = dict(enc_targets.values())
+    else:
+        new_targets = set([n[0] for n in enc_targets.values()])
+    targets.clear()
+    targets.update(new_targets)
 
 def process_resources_int(pak_path, converter, targets):
     """Extract and process resources contained in a pak file.
@@ -231,10 +294,11 @@ def process_resources_int(pak_path, converter, targets):
     :type pak_path:   str
     :param converter: used to process each selected resource, as described for
                       :func:`process_resources`
-    :type converter:  function(str,str)
+    :type converter:  function(bytes,str)
     :param targets:   resources to select, as described for
-                      :func:`process_resources`; contents may be modified
-    :type targets:    dict(str,str) or set(str) or None
+                      :func:`process_resources` and converted by
+                      :func:`encode_targets`; contents may be modified
+    :type targets:    dict(bytes,(str,str)) or None
 
     :returns: True if no IOError exception reading the pak file and no
               exception processing any resource, False otherwise
@@ -247,7 +311,7 @@ def process_resources_int(pak_path, converter, targets):
             target_info = get_target_info(instream, targets)
             if target_info is None:
                 if print_err:
-                    sys.stderr.write("%s is not a pak file\n" % pak_path)
+                    sys.stderr.write("{0} is not a pak file\n".format(pak_path))
                 return False
             processing_exception = False
             for target in target_info:
@@ -261,24 +325,20 @@ def process_resources_int(pak_path, converter, targets):
                 # indicated by the type of the targets argument.
                 try:
                     if targets is None:
-                        converter(orig_data, file_name)
+                        converter(orig_data, file_name.decode())
                     else:
-                        if isinstance(targets, dict):
-                            if converter(orig_data, targets[file_name]):
-                                del targets[file_name]
-                        else:
-                            if converter(orig_data, file_name):
-                                targets.remove(file_name)
+                        if converter(orig_data, targets[file_name][1]):
+                            del targets[file_name]
                 except:
                     processing_exception = True
                     if print_err:
-                        sys.stderr.write("%s exception processing resource %s\n" %
-                                         (repr(sys.exc_info()[1]), file_name))
+                        sys.stderr.write("{0!r} exception processing resource {1}\n".format(
+                            sys.exc_info()[1], file_name.decode()))
         return True and not processing_exception
     except IOError:
         if print_err:
-            sys.stderr.write("%s exception reading pak %s\n" %
-                             (repr(sys.exc_info()[1]), pak_path))
+            sys.stderr.write("{0!r} exception reading pak {1}\n".format(
+                sys.exc_info()[1], pak_path))
         return False
 
 def process_resources(sources, converter, targets=None):
@@ -330,7 +390,7 @@ def process_resources(sources, converter, targets=None):
                       specifying multiple such paths
     :type sources:    str or iterable(str)
     :param converter: used to process each selected resource, as described above
-    :type converter:  function(str,str)
+    :type converter:  function(bytes,str)
     :param targets:   resources to select, as described above; contents may be
                       modified
     :type targets:    dict(str,str) or set(str) or None
@@ -340,14 +400,17 @@ def process_resources(sources, converter, targets=None):
     :rtype:   bool
 
     """
-    # Handle single-string input for the sources argument.
-    if isinstance(sources, basestring):
-        return process_resources_int(sources, converter, targets)
-    # Handle iterable input for the sources argument.
+    enc_targets = encode_targets(targets)
     all_success = True
-    for pak_path in sources:
-        success = process_resources_int(pak_path, converter, targets)
-        all_success = success and all_success
+    if is_string(sources):
+        # Handle single-string input for the sources argument.
+        all_success = process_resources_int(sources, converter, enc_targets)
+    else:
+        # Handle iterable input for the sources argument.
+        for pak_path in sources:
+            success = process_resources_int(pak_path, converter, enc_targets)
+            all_success = success and all_success
+    update_targets(targets, enc_targets)
     return all_success
 
 def nop_converter(orig_data, name):
@@ -370,7 +433,7 @@ def nop_converter(orig_data, name):
     This function will always return True.
 
     :param orig_data: binary content of the resource
-    :type orig_data:  str
+    :type orig_data:  bytes
     :param name:      resource name
     :type name:       str
 
@@ -383,7 +446,7 @@ def nop_converter(orig_data, name):
     if out_dir:
         try:
             os.makedirs(out_dir)
-        except OSError, e:
+        except OSError as e:
             if e.errno != errno.EEXIST:
                 raise
     with open(real_path, 'wb') as outstream:
@@ -430,14 +493,14 @@ def resource_names_int(pak_path):
             target_info = get_target_info(instream, None)
             if target_info is None:
                 if print_err:
-                    sys.stderr.write("%s is not a pak file\n" % pak_path)
+                    sys.stderr.write("{0} is not a pak file\n".format(pak_path))
                 return None
         # 2.6 COMPAT: "set comprehension" syntax
-        return set(t[0] for t in target_info)
+        return set(t[0].decode() for t in target_info)
     except IOError:
         if print_err:
-            sys.stderr.write("%s exception reading pak %s\n" %
-                             (repr(sys.exc_info()[1]), pak_path))
+            sys.stderr.write("{0!r} exception reading pak {1}\n".format(
+                sys.exc_info()[1], pak_path))
         return None
 
 def resource_names(sources):
@@ -456,7 +519,7 @@ def resource_names(sources):
 
     """
     # Handle single-string input for the sources argument.
-    if isinstance(sources, basestring):
+    if is_string(sources):
         return resource_names_int(sources)
     # Handle iterable input for the sources argument.
     all_resources = set()
@@ -474,15 +537,15 @@ def usage():
     script = "simple_expak"
     print("")
     print("To extract all resources from pak files:")
-    print("    %s <pak_a.pak> [<pak_b.pak> ...]" % script)
+    print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script))
     print("examples:")
-    print("    %s pak0.pak pak1.pak" % script)
+    print("    {0} pak0.pak pak1.pak".format(script))
     print("")
     print("To extract specific resources from pak files:")
-    print("    %s <pak_a.pak> [<pak_b.pak> ...] <res_1> [<res_2> ...]" % script)
+    print("    {0} <pak_a.pak> [<pak_b.pak> ...] <res_1> [<res_2> ...]".format(script))
     print("examples:")
-    print("    %s pak1.pak sound/misc/basekey.wav" % script)
-    print("    %s pak0.pak pak1.pak maps/e1m1.bsp maps/e2m1.bsp maps/e3m1.bsp" % script)
+    print("    {0} pak1.pak sound/misc/basekey.wav".format(script))
+    print("    {0} pak0.pak pak1.pak maps/e1m1.bsp maps/e2m1.bsp maps/e3m1.bsp".format(script))
     print("")
 
 def simple_expak(argv=None):
@@ -560,7 +623,7 @@ def simple_expak(argv=None):
     if targets:
         print("not found (or not successfully extracted):")
         for p in targets:
-            print("    %s" % p)
+            print("    {0}".format(p))
     # All done!
     if success:
         return 0
