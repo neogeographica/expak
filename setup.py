@@ -1,4 +1,3 @@
-from __future__ import print_function
 from setuptools import setup
 from setuptools.command.test import test as TestCommand
 import codecs
@@ -24,7 +23,6 @@ distutils.msvccompiler.get_build_version = correct_build_version
 here = os.path.abspath(os.path.dirname(__file__))
 
 def read(*parts):
-    # intentionally *not* adding an encoding option to open
     return codecs.open(os.path.join(here, *parts), 'r').read()
 
 def find_version(*file_paths):
@@ -93,8 +91,12 @@ setup(
         'Natural Language :: English',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
+        'Programming Language :: Python :: 2',
         'Programming Language :: Python :: 2.6',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3',
+        'Programming Language :: Python :: 3.2',
+        'Programming Language :: Python :: 3.3',
         'Topic :: Software Development :: Libraries :: Python Modules',
         'Topic :: Utilities',
     ],

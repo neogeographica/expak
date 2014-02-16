@@ -1,6 +1,10 @@
 Changelog
 ---------
 
+- **1.1** (2014-02-16)
+
+  - Python 3 support.
+
 - **1.0** (2013-11-21)
 
   - Minor improvements to setup script, comments, and docs.
