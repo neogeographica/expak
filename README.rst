@@ -79,9 +79,18 @@ program, although the methods above work fine on Windows. Custom expak
 installers are included in the downloads list for expak
 `at the Python Package Index`_ (PyPI).
 
-If PyPI and its mirrors are down, the Windows installers and other forms of
-distribution files (including source distribution) are mirrored
-`in the releases for the GitHub repo`_.
+If PyPI is down, the above installer commands and links won't work. PyPI has
+good uptime these days, but if for some reason you do have a problem reaching
+it, the Windows installers and other forms of distribution files (including
+source distribution) are mirrored `in the releases for the GitHub repo`_.
+
+Another alternative to relying on PyPI, if you have if you have both pip and
+git installed, is to install expak directly from GitHub:
+
+.. code-block:: none
+
+    pip install git+https://github.com/neogeographica/expak
+
 
 .. _at the Python Package Index: https://pypi.python.org/pypi/expak
 .. _in the releases for the GitHub repo: https://github.com/neogeographica/expak/releases
