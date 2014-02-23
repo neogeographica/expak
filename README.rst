@@ -37,9 +37,7 @@ Prerequisites
 
 It's a Python module and utility, so you need Python! If you don't have Python
 installed, `go get it`_. The latest stable version of either Python 2 or Python 3
-will work... if you're new to Python, you should look elsewhere for advice on
-whether to use 2 or 3, but the general consideration is that currently more
-stuff is compatible with Python 2.
+will work. (And if you're already a fan of `PyPy`_, expak works with that too.)
 
 You'll probably also want a Python package manager to help install expak (and
 other things). If you're going to be running on Windows, you can skip this
@@ -53,6 +51,7 @@ later. If you don't currently have pip then you can run through the
 but you can ignore all of its complexity for the purposes of installing expak.
 
 .. _go get it: http://python.org/download/
+.. _PyPy: http://pypy.org/
 .. _pip: http://www.pip-installer.org/en/latest
 .. _instructions for installing pip: http://www.pip-installer.org/en/latest/installing.html
 
