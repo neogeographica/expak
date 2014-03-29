@@ -197,7 +197,7 @@ __all__ = ['process_resources',
            'nop_converter',
            'print_err']
 
-__version__ = "1.1"
+__version__ = "1.1.1"
 
 
 import struct
