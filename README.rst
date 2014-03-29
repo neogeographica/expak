@@ -20,8 +20,8 @@ The main component delivered by expak installation is a pure Python module,
 for programmatically working with pak files. The installation also creates a
 command-line utility for simple resource-extraction operations.
 
-Currently expak is compatible with Python 2.6, 2.7, 3.2, and 3.3. It has no
-dependencies outside of the standard Python modules.
+Currently expak is compatible with Python 2.6, 2.7, 3.2, and later 3.x. It has
+no dependencies outside of the standard Python modules.
 
 The quakesounds_ application is an example use of expak.
 
