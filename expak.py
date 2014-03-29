@@ -82,8 +82,112 @@ More complex example:
     # Notify if some of the desired files were not created.
     if targets:
         print("not found (or not successfully processed):")
-        for p in targets:
-            print("    {0}".format(p))
+        for t in targets:
+            print("    " + t)
+
+Finally, here's a complete script that can be used to create copies of bsp
+files and modify them according to the entity descriptions contained in a set
+of .ent and/or .map files. The most common example of this usecase is modifying
+maps for a CTF server so that they include flags and CTF-specific spawnpoints
+(using the entity files provided by the Threewave CTF server package).
+
+This procedure also requires the qbsp utility.
+
+.. code-block:: python
+
+    import sys
+    import glob
+    import subprocess
+    import expak
+    
+    # Name of qbsp utility to use, and complete path if required.
+    QBSP = "qbsp"
+    
+    # Extensions used to find entity files. The code below requires all of
+    # these extensions to be the same length.
+    ENT_EXTS = [".ent", ".ENT", ".map", ".MAP"]
+    ENT_EXT_LEN = len(ENT_EXTS[0])
+    
+    # Prefix to use when looking for bsp files in the paks. Probably shouldn't
+    # change this!
+    MAPS_PRE = "maps/"
+    MAPS_PRE_LEN = len(MAPS_PRE)
+    
+    def usage():
+        script = sys.argv[0]
+        print("")
+        print("Extract bsp files from pak files and apply entity changes.")
+        print("")
+        print("Entity files (.ent or .map) will be discovered in the working ")
+        print("directory when you run this script. An entity file intended ")
+        print("to modify foo.bsp should be named foo.ent or foo.map.")
+        print("")
+        print("Specify paths to pak files (containing the bsp files) on the ")
+        print("command line:")
+        print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script))
+        print("")
+    
+    def main():
+        # Get the list of pak files to process from the command line args.
+        paks = sys.argv[1:]
+        if not paks:
+            usage()
+            return 1
+        # Get entity files from the working directory. Search for all valid
+        # extensions, and (to accomodate case-insensitive platforms) form a
+        # set from the aggregate results to make sure we don't have duplicates.
+        # This isn't super-efficient but it's straightforward.
+        ents = set()
+        for ext in ENT_EXTS:
+            ents.update(glob.glob("*" + ext))
+        # Create a map of bsp resource names to entity files. Ensure that there
+        # is a one-to-one relationship.
+        ents_for_bsps = dict([(MAPS_PRE + e[:-ENT_EXT_LEN].lower() + ".bsp", e)
+                              for e in ents])
+        if len(ents) != len(ents_for_bsps):
+            sys.stderr.write("error: multiple entity files in the working "
+                             "directory would apply to the same bsp\n")
+            return 1
+        # Form a set of the resources we want to process. This set will be
+        # modified to indicate which ones are left unprocessed.
+        bsps = set(ents_for_bsps.keys())
+        # Define our converter. qbsp requires a file for input, so we'll write
+        # out the file and then invoke qbsp.
+        def converter(orig_data, name):
+            print("extracting " + name)
+            # Dump the file in the working directory, not in a maps subfolder.
+            out_name = name[MAPS_PRE_LEN:]
+            expak.nop_converter(orig_data, out_name)
+            # Run qbsp. Capture the output (which is all to stdout, even in an
+            # error case).
+            print("applying " + ents_for_bsps[name])
+            p = subprocess.Popen([QBSP, "-onlyents", ents_for_bsps[name]],
+                                 stderr=subprocess.STDOUT,
+                                 stdout=subprocess.PIPE)
+            qbsp_out = p.communicate()[0]
+            qbsp_result = p.returncode
+            # Overall success status = qbsp success status.
+            if qbsp_result == 0:
+                return True
+            # If there was a problem, dump the qbsp output.
+            sys.stderr.write("error: qbsp reported a problem:\n")
+            sys.stderr.write(qbsp_out)
+            return False
+        # Now that we have our pak sources, converter func, and target
+        # resources... do the processing.
+        expak.process_resources(paks, converter, bsps)
+        # Inform if there were bsps that we didn't find.
+        print("")
+        if bsps:
+            print("not found (or not successfully processed):")
+            for b in bsps:
+                print("    " + b)
+        else:
+            print("all bsps successfully found and processed")
+        print("")
+    
+    if __name__ == "__main__":
+        sys.exit(main())
 
 """
 
