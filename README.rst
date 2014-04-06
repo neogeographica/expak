@@ -27,7 +27,7 @@ The expak module documentation contains examples of using the module. Those
 examples range from a one-liner for listing pak file contents, up to a
 complete script for extracting and modifying map files for use on a CTF server.
 
-The quakesounds_ application is probably the most extensive use of expak.
+The quakesounds_ application makes extensive use of expak.
 
 .. _GPLv3: http://www.gnu.org/copyleft/gpl.html
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
