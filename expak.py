@@ -127,9 +127,8 @@ This procedure also requires the qbsp utility.
         print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script))
         print("")
     
-    def main():
-        # Get the list of pak files to process from the command line args.
-        paks = sys.argv[1:]
+    def main(paks):
+        # Input arg list contains the pak files to process.
         if not paks:
             usage()
             return 1
@@ -156,8 +155,7 @@ This procedure also requires the qbsp utility.
         def converter(orig_data, name):
             print("extracting " + name)
             # Dump the file in the working directory, not in a maps subfolder.
-            out_name = name[MAPS_PRE_LEN:]
-            expak.nop_converter(orig_data, out_name)
+            expak.nop_converter(orig_data, name[MAPS_PRE_LEN:])
             # Run qbsp. Capture the output (which is all to stdout, even in an
             # error case).
             print("applying " + ents_for_bsps[name])
@@ -187,7 +185,7 @@ This procedure also requires the qbsp utility.
         print("")
     
     if __name__ == "__main__":
-        sys.exit(main())
+        sys.exit(main(sys.argv[1:]))
 
 """
 
