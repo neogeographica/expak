@@ -112,6 +112,9 @@ This procedure also requires the qbsp utility.
     # change this!
     MAPS_PRE = "maps/"
     MAPS_PRE_LEN = len(MAPS_PRE)
+
+    # Docstring processors can mistreat backslash-n in example code blocks.
+    LF = chr(10)
     
     def usage():
         script = sys.argv[0]
@@ -145,7 +148,7 @@ This procedure also requires the qbsp utility.
                               for e in ents])
         if len(ents) != len(ents_for_bsps):
             sys.stderr.write("error: multiple entity files in the working "
-                             "directory would apply to the same bsp\n")
+                             "directory would apply to the same bsp" + LF)
             return 1
         # Form a set of the resources we want to process. This set will be
         # modified to indicate which ones are left unprocessed.
@@ -168,7 +171,7 @@ This procedure also requires the qbsp utility.
             if qbsp_result == 0:
                 return True
             # If there was a problem, dump the qbsp output.
-            sys.stderr.write("error: qbsp reported a problem:\n")
+            sys.stderr.write("error: qbsp reported a problem:" + LF)
             sys.stderr.write(qbsp_out)
             return False
         # Now that we have our pak sources, converter func, and target
