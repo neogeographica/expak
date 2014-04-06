@@ -116,8 +116,7 @@ This procedure also requires the qbsp utility.
     # Docstring processors can mistreat backslash-n in example code blocks.
     LF = chr(10)
     
-    def usage():
-        script = sys.argv[0]
+    def usage(script_path):
         print("")
         print("Extract bsp files from pak files and apply entity changes.")
         print("")
@@ -127,14 +126,10 @@ This procedure also requires the qbsp utility.
         print("")
         print("Specify paths to pak files (containing the bsp files) on the ")
         print("command line:")
-        print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script))
+        print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script_path))
         print("")
     
     def main(paks):
-        # Input arg list contains the pak files to process.
-        if not paks:
-            usage()
-            return 1
         # Get entity files from the working directory. Search for all valid
         # extensions, and (to accomodate case-insensitive platforms) form a
         # set from the aggregate results to make sure we don't have duplicates.
@@ -188,7 +183,12 @@ This procedure also requires the qbsp utility.
         print("")
     
     if __name__ == "__main__":
-        sys.exit(main(sys.argv[1:]))
+        script_path = sys.argv[0]
+        paks = sys.argv[1:]
+        if not paks:
+            usage(script_path)
+            sys.exit(1)
+        sys.exit(main(paks))
 
 """
 
