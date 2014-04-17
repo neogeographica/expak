@@ -3,11 +3,11 @@
 expak: Extract and process resources from Quake-style pak files
 ===============================================================
 
-.. image:: https://badge.fury.io/py/expak.png
-    :target: http://badge.fury.io/py/expak
+.. image:: http://img.shields.io/pypi/v/expak.svg
+    :target: https://pypi.python.org/pypi/expak
     :alt: current version
 
-.. image:: https://api.travis-ci.org/neogeographica/expak.png?branch=master
+.. image:: http://img.shields.io/travis/neogeographica/expak.svg
     :target: http://travis-ci.org/neogeographica/expak
     :alt: build status of the master branch
 
