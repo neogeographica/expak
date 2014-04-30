@@ -1,6 +1,12 @@
 Changelog
 ---------
 
+- **1.1.1** (2014-04-30)
+
+  - Explicitly claim support for PyPy and 3.4 (no functional change).
+  - Bigger example script included in module docs.
+  - Minor improvements to the readme.
+
 - **1.1** (2014-02-16)
 
   - Python 3 support.
