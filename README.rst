@@ -3,11 +3,11 @@
 expak: Extract and process resources from Quake-style pak files
 ===============================================================
 
-.. image:: https://badge.fury.io/py/expak.png
-    :target: http://badge.fury.io/py/expak
+.. image:: http://img.shields.io/pypi/v/expak.svg
+    :target: https://pypi.python.org/pypi/expak
     :alt: current version
 
-.. image:: https://api.travis-ci.org/neogeographica/expak.png?branch=master
+.. image:: http://img.shields.io/travis/neogeographica/expak.svg
     :target: http://travis-ci.org/neogeographica/expak
     :alt: build status of the master branch
 
@@ -20,10 +20,14 @@ The main component delivered by expak installation is a pure Python module,
 for programmatically working with pak files. The installation also creates a
 command-line utility for simple resource-extraction operations.
 
-Currently expak is compatible with Python 2.6, 2.7, 3.2, and 3.3. It has no
-dependencies outside of the standard Python modules.
+Currently expak is compatible with Python 2.6, 2.7, 3.2, and later 3.x. It has
+no dependencies outside of the standard Python modules.
 
-The quakesounds_ application is an example use of expak.
+The expak module documentation contains examples of using the module. Those
+examples range from a one-liner for listing pak file contents, up to a
+complete script for extracting and modifying map files for use on a CTF server.
+
+The quakesounds_ application makes extensive use of expak.
 
 .. _GPLv3: http://www.gnu.org/copyleft/gpl.html
 .. _Quake-style pak files: http://quakewiki.org/wiki/.pak
@@ -37,9 +41,7 @@ Prerequisites
 
 It's a Python module and utility, so you need Python! If you don't have Python
 installed, `go get it`_. The latest stable version of either Python 2 or Python 3
-will work... if you're new to Python, you should look elsewhere for advice on
-whether to use 2 or 3, but the general consideration is that currently more
-stuff is compatible with Python 2.
+will work. (And if you're already a fan of `PyPy`_, expak works with that too.)
 
 You'll probably also want a Python package manager to help install expak (and
 other things). If you're going to be running on Windows, you can skip this
@@ -53,6 +55,7 @@ later. If you don't currently have pip then you can run through the
 but you can ignore all of its complexity for the purposes of installing expak.
 
 .. _go get it: http://python.org/download/
+.. _PyPy: http://pypy.org/
 .. _pip: http://www.pip-installer.org/en/latest
 .. _instructions for installing pip: http://www.pip-installer.org/en/latest/installing.html
 
@@ -80,9 +83,18 @@ program, although the methods above work fine on Windows. Custom expak
 installers are included in the downloads list for expak
 `at the Python Package Index`_ (PyPI).
 
-If PyPI and its mirrors are down, the Windows installers and other forms of
-distribution files (including source distribution) are mirrored
-`in the releases for the GitHub repo`_.
+If PyPI is down, the above installer commands and links won't work. PyPI has
+good uptime these days, but if for some reason you do have a problem reaching
+it, the Windows installers and other forms of distribution files (including
+source distribution) are mirrored `in the releases for the GitHub repo`_.
+
+Another alternative to relying on PyPI, if you have if you have both pip and
+git installed, is to install expak directly from GitHub:
+
+.. code-block:: none
+
+    pip install git+https://github.com/neogeographica/expak
+
 
 .. _at the Python Package Index: https://pypi.python.org/pypi/expak
 .. _in the releases for the GitHub repo: https://github.com/neogeographica/expak/releases

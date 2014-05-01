@@ -1,9 +1,11 @@
 language: python
 python:
+  - "3.4"
   - "3.3"
   - "3.2"
   - "2.7"
   - "2.6"
+  - "pypy"
 install:
   - python setup.py sdist --formats=zip -k -d dist
   - find ./dist -iname "*.zip" -print0 | xargs -0 pip install

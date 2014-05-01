@@ -23,6 +23,7 @@ publish: infup
 	python2.7 setup.py bdist_egg upload
 	python3.2 setup.py bdist_egg upload
 	python3.3 setup.py bdist_egg upload
+	python3.4 setup.py bdist_egg upload
 	python setup.py bdist_wininst -p win32 upload
 	python setup.py bdist_wininst -p win-amd64 upload
 
@@ -32,6 +33,7 @@ dist: readme
 	python2.7 setup.py bdist_egg
 	python3.2 setup.py bdist_egg
 	python3.3 setup.py bdist_egg
+	python3.4 setup.py bdist_egg
 	python setup.py bdist_wininst -p win32
 	python setup.py bdist_wininst -p win-amd64
 
