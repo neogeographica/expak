@@ -112,9 +112,11 @@ This procedure also requires the qbsp utility.
     # change this!
     MAPS_PRE = "maps/"
     MAPS_PRE_LEN = len(MAPS_PRE)
+
+    # Docstring processors can mistreat backslash-n in example code blocks.
+    LF = chr(10)
     
-    def usage():
-        script = sys.argv[0]
+    def usage(script_path):
         print("")
         print("Extract bsp files from pak files and apply entity changes.")
         print("")
@@ -124,15 +126,10 @@ This procedure also requires the qbsp utility.
         print("")
         print("Specify paths to pak files (containing the bsp files) on the ")
         print("command line:")
-        print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script))
+        print("    {0} <pak_a.pak> [<pak_b.pak> ...]".format(script_path))
         print("")
     
-    def main():
-        # Get the list of pak files to process from the command line args.
-        paks = sys.argv[1:]
-        if not paks:
-            usage()
-            return 1
+    def main(paks):
         # Get entity files from the working directory. Search for all valid
         # extensions, and (to accomodate case-insensitive platforms) form a
         # set from the aggregate results to make sure we don't have duplicates.
@@ -146,7 +143,7 @@ This procedure also requires the qbsp utility.
                               for e in ents])
         if len(ents) != len(ents_for_bsps):
             sys.stderr.write("error: multiple entity files in the working "
-                             "directory would apply to the same bsp\n")
+                             "directory would apply to the same bsp" + LF)
             return 1
         # Form a set of the resources we want to process. This set will be
         # modified to indicate which ones are left unprocessed.
@@ -156,8 +153,7 @@ This procedure also requires the qbsp utility.
         def converter(orig_data, name):
             print("extracting " + name)
             # Dump the file in the working directory, not in a maps subfolder.
-            out_name = name[MAPS_PRE_LEN:]
-            expak.nop_converter(orig_data, out_name)
+            expak.nop_converter(orig_data, name[MAPS_PRE_LEN:])
             # Run qbsp. Capture the output (which is all to stdout, even in an
             # error case).
             print("applying " + ents_for_bsps[name])
@@ -170,7 +166,7 @@ This procedure also requires the qbsp utility.
             if qbsp_result == 0:
                 return True
             # If there was a problem, dump the qbsp output.
-            sys.stderr.write("error: qbsp reported a problem:\n")
+            sys.stderr.write("error: qbsp reported a problem:" + LF)
             sys.stderr.write(qbsp_out)
             return False
         # Now that we have our pak sources, converter func, and target
@@ -187,7 +183,12 @@ This procedure also requires the qbsp utility.
         print("")
     
     if __name__ == "__main__":
-        sys.exit(main())
+        script_path = sys.argv[0]
+        paks = sys.argv[1:]
+        if not paks:
+            usage(script_path)
+            sys.exit(1)
+        sys.exit(main(paks))
 
 """
 
@@ -197,7 +198,7 @@ __all__ = ['process_resources',
            'nop_converter',
            'print_err']
 
-__version__ = "1.1"
+__version__ = "1.1.1"
 
 
 import struct
